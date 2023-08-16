@@ -1,0 +1,110 @@
+{% extends 'admins/adminbase.html' %}
+{% block content %}
+{% load static %}
+
+
+
+<!-- partial -->
+<div class="main-panel">
+  <div class="content-wrapper">
+
+    <div class="row">
+
+
+      <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div>
+              <h4 class="card-title">Orders</h4>
+
+
+              </p>
+              <div class="table-responsive">
+                <table class="table table-striped mt-5">
+                  <thead>
+                    <tr>
+                      <th>
+                        Sl.no.
+                      </th>
+                      <th>
+                        Order number
+                      </th>
+
+                      <th>
+                        Address
+                      </th>
+                      <th>
+                        Order total
+                      </th>
+
+                      <th>
+                        Ordered On
+                      </th>
+                      <th>
+                        Status
+                      </th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    {% for x in order %}
+                    <tr>
+                      <td class="py-1">
+                        {{ forloop.counter }}
+
+                      </td>
+                      <td>
+                        {{ x.tracking_no }}
+                      </td>
+
+
+                      <td>
+
+                        {{x.address_line_1 | capfirst }}, <br> {{ x.address_line_2 | capfirst}},
+                        {{x.city | capfirst}},<br> {{x.state | capfirst}},<br> {{x.pincode}}
+
+                      </td>
+                      <td>
+                        {{ x.total_price }}
+                      </td>
+
+                      <td>
+                        {{ x.created_at }}
+                      </td>
+                      <td>
+                        {% if x.status == 'Returned' or x.status == 'Cancelled' %}
+                        {{x.status}}
+                        {% else %}
+                        <form action="{% url 'customadmin:edit_order' x.id %}"
+                          class="forms-sample d-flex justify-content-center" method="POST">{% csrf_token %}
+                          <select class="form-select form-select-sm" name="select_status">
+                            <option selected>{{ x.status }}</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Out for Shipping">Out for Shipping</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Cancelled">Cancel</option>
+                            <option value="Out for Delivery">Out for Delivery</option>
+                            <option value="Delivered">Delivered</option>
+                          </select>
+                      </td>
+                      <td>
+                        <button type="submit"><i style="color:green" class="fa-solid fa-square-pen "></i></button>
+                        <!-- <a href=""><i style="color:green" class="fa-solid fa-square-pen "></i></a> -->
+                        </form>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    {% endblock %}
